@@ -7,6 +7,7 @@ local F = Cell.funcs
 ---@type PixelPerfectFuncs
 local P = Cell.pixelPerfectFuncs
 local LCG = LibStub("LibCustomGlow-1.0")
+local LSM = LibStub("LibSharedMedia-3.0", true)
 
 -----------------------------------------
 -- Color
@@ -120,7 +121,8 @@ local defaultFont = GameFontNormal:GetFont()
 local fontSizeOffset = 0
 function Cell.UpdateOptionsFont(offset, useGameFont)
     if useGameFont then
-        defaultFont = GameFontNormal:GetFont()
+        -- defaultFont = GameFontNormal:GetFont()
+        defaultFont = LSM:Fetch("font", "FZZY CB")
     else
         defaultFont = "Interface\\AddOns\\Cell\\Media\\Fonts\\Accidental_Presidency.ttf"
     end
