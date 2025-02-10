@@ -3,6 +3,7 @@ local L = addon.L
 local F = addon.funcs
 local P = addon.pixelPerfectFuncs
 local LCG = LibStub("LibCustomGlow-1.0")
+local LSM = LibStub("LibSharedMedia-3.0", true)
 
 -----------------------------------------
 -- Color
@@ -116,7 +117,8 @@ local defaultFont = GameFontNormal:GetFont()
 local fontSizeOffset = 0
 function addon:UpdateOptionsFont(offset, useGameFont)
     if useGameFont then
-        defaultFont = GameFontNormal:GetFont()
+        -- defaultFont = GameFontNormal:GetFont()
+        defaultFont = LSM:Fetch("font", "FZZY CB")
     else
         defaultFont = "Interface\\AddOns\\Cell\\Media\\Fonts\\Accidental_Presidency.ttf"
     end

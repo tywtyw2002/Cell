@@ -2057,21 +2057,41 @@ UnitButton_UpdateHealthColor = function(self)
     end
 
     if UnitIsPlayer(unit) then -- player
-        if not UnitIsConnected(unit) then
+        if not UnitIsConnected(unit) or UnitIsDeadOrGhost(unit) then
+            local color = { F:GetClassColor(self.states.class) }
             barR, barG, barB = 0.4, 0.4, 0.4
-            lossR, lossG, lossB = 0.4, 0.4, 0.4
+            lossR, lossG, lossB = color[1] * 0.35, color[2] * 0.35, color[3] * 0.35
         elseif UnitIsCharmed(unit) then
             barR, barG, barB, barA = 0.5, 0, 1, 1
             lossR, lossG, lossB, lossA = barR*0.2, barG*0.2, barB*0.2, 1
         elseif self.states.inVehicle then
-            barR, barG, barB, lossR, lossG, lossB = F:GetHealthBarColor(self.states.healthPercent, self.states.isDeadOrGhost or self.states.isDead, 0, 1, 0.2)
+            barR, barG, barB = 0, 1, 0.2
+            lossR, lossG, lossB = 0.15, 0.15, 0.15
         else
-            barR, barG, barB, lossR, lossG, lossB = F:GetHealthBarColor(self.states.healthPercent, self.states.isDeadOrGhost or self.states.isDead, F:GetClassColor(self.states.class))
+            barR, barG, barB = F:ColorGradient(
+                self.states.healthPercent,
+                {0.69, 0.31, 0.31},
+                {0.71, 0.43, 0.27},
+                {0.17, 0.17, 0.24}
+            )
+            lossR, lossG, lossB = 0.15, 0.15, 0.15
         end
     elseif F:IsPet(self.states.guid) then -- pet
-        barR, barG, barB, lossR, lossG, lossB = F:GetHealthBarColor(self.states.healthPercent, self.states.isDeadOrGhost or self.states.isDead, 0.5, 0.5, 1)
+        barR, barG, barB = F:ColorGradient(
+            self.states.healthPercent,
+            {0.69, 0.31, 0.31},
+            {0.71, 0.43, 0.27},
+            {0.17, 0.17, 0.24}
+        )
+        lossR, lossG, lossB = 0.5, 0.5, 1
     else -- npc
-        barR, barG, barB, lossR, lossG, lossB = F:GetHealthBarColor(self.states.healthPercent, self.states.isDeadOrGhost or self.states.isDead, 0, 1, 0.2)
+        barR, barG, barB = F:ColorGradient(
+            self.states.healthPercent,
+            {0.69, 0.31, 0.31},
+            {0.71, 0.43, 0.27},
+            {0.17, 0.17, 0.24}
+        )
+        lossR, lossG, lossB = 0, 0.7, 0.14
     end
 
     self.widgets.healthBar:SetStatusBarColor(barR, barG, barB, barA)

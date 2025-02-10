@@ -1177,6 +1177,59 @@ function F:GetPowerBarColor(unit, class)
     return r, g, b, lossR, lossG, lossB, t
 end
 
+function F:GetHealthBarColor2(percent)
+    if not Cell.loaded then
+        return 0.08, 0.08, 0.08
+    end
+
+    local barR, barG, barB, lossR, lossG, lossB
+    percent = percent or 1
+
+    -- bar
+    barR, barG, barB = F:ColorGradient(
+        percent,
+        {0.69, 0.31, 0.31},
+        {0.71, 0.43, 0.27},
+        {0.17, 0.17, 0.24}
+    )
+
+    -- loss
+    if isDeadOrGhost and Cell.vars.useDeathColor then
+        lossR = CellDB["appearance"]["deathColor"][2][1]
+        lossG = CellDB["appearance"]["deathColor"][2][2]
+        lossB = CellDB["appearance"]["deathColor"][2][3]
+    else
+        if CellDB["appearance"]["lossColor"][1] == "class_color" then
+            lossR, lossG, lossB = r, g, b
+        elseif CellDB["appearance"]["lossColor"][1] == "class_color_dark" then
+            lossR, lossG, lossB = r*0.2, g*0.2, b*0.2
+        elseif CellDB["appearance"]["lossColor"][1] == "threshold1" then
+            local c = CellDB["appearance"]["colorThresholdsLoss"]
+            lossR, lossG, lossB = F:ColorThreshold(percent, c[1], c[2], c[3], c[4], c[5], c[6])
+        elseif CellDB["appearance"]["lossColor"][1] == "threshold2" then
+            local c = CellDB["appearance"]["colorThresholdsLoss"]
+            if isDeadOrGhost or percent <= c[4] then
+                lossR, lossG, lossB = r, g, b  -- dead: class color
+            else
+                lossR, lossG, lossB = F:ColorThreshold(percent, {r, g, b}, c[2], c[3], c[4], c[5], c[6])
+            end
+        elseif CellDB["appearance"]["lossColor"][1] == "threshold3" then
+            local c = CellDB["appearance"]["colorThresholdsLoss"]
+            if isDeadOrGhost or percent <= c[4] then
+                lossR, lossG, lossB = r*0.2, g*0.2, b*0.2  -- dead: class color
+            else
+                lossR, lossG, lossB = F:ColorThreshold(percent, {r*0.2, g*0.2, b*0.2}, c[2], c[3], c[4], c[5], c[6])
+            end
+        else
+            lossR = CellDB["appearance"]["lossColor"][2][1]
+            lossG = CellDB["appearance"]["lossColor"][2][2]
+            lossB = CellDB["appearance"]["lossColor"][2][3]
+        end
+    end
+
+    return barR, barG, barB, lossR, lossG, lossB
+end
+
 function F:GetHealthBarColor(percent, isDeadOrGhost, r, g, b)
     if not Cell.loaded then
         return r, g, b, r*0.2, g*0.2, b*0.2
