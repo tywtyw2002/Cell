@@ -38,8 +38,11 @@ Cell.MIN_DEBUFFS_VERSION = 239
 --@debug@
 local debugMode = true
 --@end-debug@
+
+Cell._LET_DO_DEBUG = false
+
 function F.Debug(arg, ...)
-    if debugMode then
+    if Cell._LET_DO_DEBUG then
         if type(arg) == "string" or type(arg) == "number" then
             print(arg, ...)
         elseif type(arg) == "table" then
@@ -98,6 +101,7 @@ function F.UpdateLayout(layoutGroupType)
         end, true)
 
         Cell.Fire("UpdateLayout", layout)
+        Cell.Fire("PostUpdateLayout", Cell.vars.currentLayout)
         Cell.Fire("UpdateIndicators")
     end
 end
